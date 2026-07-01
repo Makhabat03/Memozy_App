@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1040"/>
+      <stop offset="100%" stop-color="#3b1d6b"/>
+    </linearGradient>
+  </defs>
+  <!-- Dark purple background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Main sparkle (same paths as MSparkle) -->
+  <path d="M16 1L17.5 14.5L31 16L17.5 17.5L16 31L14.5 17.5L1 16L14.5 14.5Z" fill="#a78bfa"/>
+  <path d="M25 5L25.8 8.2L29 9L25.8 9.8L25 13L24.2 9.8L21 9L24.2 8.2Z" fill="#c4b5fd"/>
+  <path d="M6.5 20L7 22L9 22.5L7 23L6.5 25L6 23L4 22.5L6 22Z" fill="#ddd6fe"/>
+</svg>

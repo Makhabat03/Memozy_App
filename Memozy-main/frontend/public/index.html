@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f472b6" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Memozy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { cursor: none !important; }
+      .glass-card {
+        backdrop-filter: blur(16px) saturate(1.6);
+        -webkit-backdrop-filter: blur(16px) saturate(1.6);
+      }
+      .glass-nav {
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      }
+      /* Dark theme text/emoji legibility */
+      body[data-theme="darkFuturistic"] {
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      body[data-theme="darkFuturistic"] span[role="img"],
+      body[data-theme="darkFuturistic"] .theme-emoji {
+        filter: drop-shadow(0 0 4px rgba(0,255,231,0.6));
+      }
+      body[data-theme="darkFuturistic"] h1,
+      body[data-theme="darkFuturistic"] h2,
+      body[data-theme="darkFuturistic"] h3 {
+        text-shadow: 0 0 12px rgba(0,255,231,0.25);
+      }
+      /* Boost contrast for any generic muted text on dark themes */
+      body[data-theme="darkFuturistic"] p,
+      body[data-theme="darkFuturistic"] label,
+      body[data-theme="darkFuturistic"] span {
+        text-rendering: optimizeLegibility;
+      }
+      body[data-theme="cosmic"] {
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      body[data-theme="cosmic"] span[role="img"],
+      body[data-theme="cosmic"] .theme-emoji {
+        filter: drop-shadow(0 0 5px rgba(226,184,255,0.55));
+      }
+      body[data-theme="cosmic"] h1,
+      body[data-theme="cosmic"] h2,
+      body[data-theme="cosmic"] h3 {
+        text-shadow: 0 0 14px rgba(226,184,255,0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
