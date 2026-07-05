@@ -111,6 +111,107 @@ const TourOverlay: React.FC = () => {
   const isCenter = !hasSpotlight;
   const progress = ((step + 1) / total) * 100;
 
+  const renderCardContent = () => (
+    <>
+      {/* Close */}
+      <button
+        type="button"
+        onClick={endTour}
+        style={{
+          position: 'absolute', top: '0.8rem', right: '0.9rem',
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: theme.textLight, fontSize: '1rem', opacity: 0.55,
+          padding: '0.2rem 0.4rem', borderRadius: '6px',
+          fontFamily: theme.font,
+        }}
+      >
+        ✕
+      </button>
+
+      {/* Center-step emoji */}
+      {isCenter && current.emoji && (
+        <motion.div
+          animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.12, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2 }}
+          style={{ textAlign: 'center', fontSize: '2.8rem', marginBottom: '0.6rem' }}
+        >
+          {current.emoji}
+        </motion.div>
+      )}
+
+      {/* Title */}
+      <div style={{
+        fontWeight: 900,
+        fontSize: isCenter ? (isMobile ? '1.15rem' : '1.35rem') : (isMobile ? '0.88rem' : '0.97rem'),
+        color: theme.text,
+        marginBottom: '0.45rem',
+        paddingRight: '1.5rem',
+        textAlign: isCenter ? 'center' : 'left',
+      }}>
+        {current.title}
+      </div>
+
+      {/* Description */}
+      <div style={{
+        fontSize: isMobile ? '0.8rem' : '0.875rem',
+        color: theme.textLight,
+        lineHeight: 1.6,
+        marginBottom: '1.1rem',
+        textAlign: isCenter ? 'center' : 'left',
+      }}>
+        {current.desc}
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: theme.textLight, marginBottom: '0.25rem', opacity: 0.7 }}>
+          <span>{t('tourStepLabel')} {step + 1} {t('tourOfLabel')} {total}</span>
+          <span>{Math.round(progress)}%</span>
+        </div>
+        <div style={{ background: `${theme.primary}22`, borderRadius: 999, height: 4, overflow: 'hidden' }}>
+          <motion.div
+            animate={{ width: `${progress}%` }}
+            transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+            style={{ height: '100%', background: `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`, borderRadius: 999 }}
+          />
+        </div>
+      </div>
+
+      {/* Navigation buttons */}
+      <div style={{ display: 'flex', gap: '0.6rem' }}>
+        {step > 0 && (
+          <button
+            type="button"
+            onClick={prevStep}
+            style={{
+              flex: 1, padding: '0.6rem 0.5rem',
+              background: `${theme.primary}12`,
+              border: `1.5px solid ${theme.primary}33`,
+              borderRadius: '10px', cursor: 'pointer',
+              color: theme.textLight, fontWeight: 700, fontSize: '0.85rem',
+              fontFamily: theme.font, transition: 'all 0.15s',
+            }}
+          >
+            {t('tourBackBtn')}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleNext}
+          style={{
+            flex: 2, padding: '0.65rem 0.5rem',
+            background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+            border: 'none', borderRadius: '10px', cursor: 'pointer',
+            color: '#fff', fontWeight: 900, fontSize: '0.9rem',
+            fontFamily: theme.font,
+          }}
+        >
+          {step === total - 1 ? t('tourFinishBtn') : t('tourNextBtn')}
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <>
       {/* ── Spotlight hole ── */}
@@ -141,124 +242,68 @@ const TourOverlay: React.FC = () => {
 
       {/* ── Tooltip / Modal ── */}
       <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, scale: 0.93, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.93, y: -10 }}
-          transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-          style={{
-            position: 'fixed',
-            zIndex: 9000,
-            width: isCenter ? Math.min(440, window.innerWidth - 32) : TOOLTIP_W,
-            background: theme.card,
-            borderRadius: isMobile ? '16px' : '20px',
-            boxShadow: `0 24px 64px rgba(0,0,0,0.55), 0 0 0 1.5px ${theme.primary}44`,
-            padding: isMobile ? '1.1rem 1.1rem 1rem' : '1.5rem 1.5rem 1.25rem',
-            fontFamily: theme.font,
-            maxWidth: 'calc(100vw - 16px)',
-            ...(isCenter
-              ? { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
-              : { ...tooltipStyle() }),
-          }}
-        >
-          {/* Close */}
-          <button
-            type="button"
-            onClick={endTour}
+        {isCenter ? (
+          // Center steps: a full-viewport flex wrapper handles centering.
+          // This avoids relying on top/left percentages + transform, which
+          // some in-app/webview browsers (Telegram, Instagram, etc.) can
+          // miscalculate.
+          <div
+            key={`center-wrap-${step}`}
             style={{
-              position: 'absolute', top: '0.8rem', right: '0.9rem',
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: theme.textLight, fontSize: '1rem', opacity: 0.55,
-              padding: '0.2rem 0.4rem', borderRadius: '6px',
-              fontFamily: theme.font,
+              position: 'fixed',
+              inset: 0,
+              zIndex: 9000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+              pointerEvents: 'none',
             }}
           >
-            ✕
-          </button>
-
-          {/* Center-step emoji */}
-          {isCenter && current.emoji && (
             <motion.div
-              animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.12, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2 }}
-              style={{ textAlign: 'center', fontSize: '2.8rem', marginBottom: '0.6rem' }}
-            >
-              {current.emoji}
-            </motion.div>
-          )}
-
-          {/* Title */}
-          <div style={{
-            fontWeight: 900,
-            fontSize: isCenter ? (isMobile ? '1.15rem' : '1.35rem') : (isMobile ? '0.88rem' : '0.97rem'),
-            color: theme.text,
-            marginBottom: '0.45rem',
-            paddingRight: '1.5rem',
-            textAlign: isCenter ? 'center' : 'left',
-          }}>
-            {current.title}
-          </div>
-
-          {/* Description */}
-          <div style={{
-            fontSize: isMobile ? '0.8rem' : '0.875rem',
-            color: theme.textLight,
-            lineHeight: 1.6,
-            marginBottom: '1.1rem',
-            textAlign: isCenter ? 'center' : 'left',
-          }}>
-            {current.desc}
-          </div>
-
-          {/* Progress bar */}
-          <div style={{ marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: theme.textLight, marginBottom: '0.25rem', opacity: 0.7 }}>
-              <span>{t('tourStepLabel')} {step + 1} {t('tourOfLabel')} {total}</span>
-              <span>{Math.round(progress)}%</span>
-            </div>
-            <div style={{ background: `${theme.primary}22`, borderRadius: 999, height: 4, overflow: 'hidden' }}>
-              <motion.div
-                animate={{ width: `${progress}%` }}
-                transition={{ type: 'spring', stiffness: 180, damping: 22 }}
-                style={{ height: '100%', background: `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`, borderRadius: 999 }}
-              />
-            </div>
-          </div>
-
-          {/* Navigation buttons */}
-          <div style={{ display: 'flex', gap: '0.6rem' }}>
-            {step > 0 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                style={{
-                  flex: 1, padding: '0.6rem 0.5rem',
-                  background: `${theme.primary}12`,
-                  border: `1.5px solid ${theme.primary}33`,
-                  borderRadius: '10px', cursor: 'pointer',
-                  color: theme.textLight, fontWeight: 700, fontSize: '0.85rem',
-                  fontFamily: theme.font, transition: 'all 0.15s',
-                }}
-              >
-                {t('tourBackBtn')}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={handleNext}
+              key={step}
+              initial={{ opacity: 0, scale: 0.93, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: -10 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
               style={{
-                flex: 2, padding: '0.65rem 0.5rem',
-                background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
-                border: 'none', borderRadius: '10px', cursor: 'pointer',
-                color: '#fff', fontWeight: 900, fontSize: '0.9rem',
+                position: 'relative',
+                pointerEvents: 'auto',
+                width: '100%',
+                maxWidth: Math.min(440, (typeof window !== 'undefined' ? window.innerWidth : 440) - 32),
+                background: theme.card,
+                borderRadius: isMobile ? '16px' : '20px',
+                boxShadow: `0 24px 64px rgba(0,0,0,0.55), 0 0 0 1.5px ${theme.primary}44`,
+                padding: isMobile ? '1.1rem 1.1rem 1rem' : '1.5rem 1.5rem 1.25rem',
                 fontFamily: theme.font,
               }}
             >
-              {step === total - 1 ? t('tourFinishBtn') : t('tourNextBtn')}
-            </button>
+              {renderCardContent()}
+            </motion.div>
           </div>
-        </motion.div>
+        ) : (
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, scale: 0.93, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.93, y: -10 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            style={{
+              position: 'fixed',
+              zIndex: 9000,
+              width: TOOLTIP_W,
+              background: theme.card,
+              borderRadius: isMobile ? '16px' : '20px',
+              boxShadow: `0 24px 64px rgba(0,0,0,0.55), 0 0 0 1.5px ${theme.primary}44`,
+              padding: isMobile ? '1.1rem 1.1rem 1rem' : '1.5rem 1.5rem 1.25rem',
+              fontFamily: theme.font,
+              maxWidth: 'calc(100vw - 16px)',
+              ...tooltipStyle(),
+            }}
+          >
+            {renderCardContent()}
+          </motion.div>
+        )}
       </AnimatePresence>
     </>
   );
