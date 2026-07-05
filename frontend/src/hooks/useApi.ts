@@ -5,6 +5,55 @@ const api = axios.create({
   timeout: 30000,
 });
 
+// ── Backend "waking up" detection ──────────────────────────────────────
+// Render's free tier spins the backend down after inactivity. The first
+// request after that can take 20-40s. We track in-flight requests and,
+// if any single request is still pending after WAKE_THRESHOLD_MS, we
+// notify subscribers (e.g. a banner component) so the user sees a
+// friendly message instead of a frozen-feeling UI.
+const WAKE_THRESHOLD_MS = 3000;
+type WakeListener = (isWaking: boolean) => void;
+const wakeListeners = new Set<WakeListener>();
+let pendingCount = 0;
+let wakeTimer: ReturnType<typeof setTimeout> | null = null;
+let isWaking = false;
+
+function setWaking(value: boolean) {
+  if (isWaking === value) return;
+  isWaking = value;
+  wakeListeners.forEach(l => l(value));
+}
+
+export function subscribeWakeState(listener: WakeListener): () => void {
+  wakeListeners.add(listener);
+  listener(isWaking); // immediately push current state
+  return () => wakeListeners.delete(listener);
+}
+
+api.interceptors.request.use(cfg => {
+  pendingCount++;
+  if (wakeTimer) clearTimeout(wakeTimer);
+  wakeTimer = setTimeout(() => {
+    if (pendingCount > 0) setWaking(true);
+  }, WAKE_THRESHOLD_MS);
+  return cfg;
+});
+
+const clearIfIdle = () => {
+  pendingCount = Math.max(0, pendingCount - 1);
+  if (pendingCount === 0) {
+    if (wakeTimer) clearTimeout(wakeTimer);
+    wakeTimer = null;
+    setWaking(false);
+  }
+};
+
+api.interceptors.response.use(
+  res => { clearIfIdle(); return res; },
+  err => { clearIfIdle(); return Promise.reject(err); }
+);
+// ─────────────────────────────────────────────────────────────────────
+
 const _cache = new Map<string, { data: any; ts: number }>();
 const TTL = 60_000;
 

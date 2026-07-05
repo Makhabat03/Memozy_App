@@ -42,6 +42,7 @@ export type TranslationKeys = {
   tourStep8Title: string; tourStep8Desc: string;
   tourStepLabel: string; tourOfLabel: string;
   tourBackBtn: string; tourNextBtn: string; tourFinishBtn: string;
+  backendWakingUp: string;
   // Nav
   home: string; create: string; decks: string; social: string; profile: string; signOut: string;
   // Dashboard
@@ -120,6 +121,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Change Your Theme 🎨', tourStep7Desc: 'Pick from 5 animated themes anytime. Each one has a completely different background and vibe.',
     tourStep8Title: "You're ready!", tourStep8Desc: "That's it! Create your first deck and start building that streak. Good luck!",
     tourStepLabel: 'Step', tourOfLabel: 'of', tourBackBtn: '← Back', tourNextBtn: 'Next →', tourFinishBtn: '🚀 Create my first deck',
+    backendWakingUp: 'Waking up the server... this can take up to 30 seconds on first load.',
     home: 'Home', create: 'Create', decks: 'Decks', social: 'Social', profile: 'Profile', signOut: 'Sign out',
     hey: 'Hey', yourDecks: 'Your Decks', newDeck: 'New Deck', noDecksYet: 'No decks yet.', createFirst: 'Create your first one!',
     study: 'Study', cards: 'cards', xpToLevel: 'XP to level',
@@ -185,6 +187,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Cambia tu Tema 🎨', tourStep7Desc: 'Elige entre 5 temas animados cuando quieras. Cada uno tiene un fondo y ambiente completamente diferente.',
     tourStep8Title: '¡Ya estás listo!', tourStep8Desc: '¡Eso es todo! Crea tu primer mazo y empieza a construir esa racha. ¡Buena suerte!',
     tourStepLabel: 'Paso', tourOfLabel: 'de', tourBackBtn: '← Atrás', tourNextBtn: 'Siguiente →', tourFinishBtn: '🚀 Crear mi primer mazo',
+    backendWakingUp: 'Despertando el servidor... puede tardar hasta 30 segundos en la primera carga.',
     home: 'Inicio', create: 'Crear', decks: 'Mazos', social: 'Social', profile: 'Perfil', signOut: 'Cerrar sesión',
     hey: 'Hola', yourDecks: 'Tus Mazos', newDeck: 'Nuevo Mazo', noDecksYet: 'Aún no hay mazos.', createFirst: '¡Crea el primero!',
     study: 'Estudiar', cards: 'tarjetas', xpToLevel: 'XP para nivel',
@@ -250,6 +253,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Changez de Thème 🎨', tourStep7Desc: 'Choisissez parmi 5 thèmes animés à tout moment. Chacun a un arrière-plan et une ambiance complètement différents.',
     tourStep8Title: 'Vous êtes prêt !', tourStep8Desc: 'C\'est tout ! Créez votre premier paquet et commencez votre série. Bonne chance !',
     tourStepLabel: 'Étape', tourOfLabel: 'sur', tourBackBtn: '← Retour', tourNextBtn: 'Suivant →', tourFinishBtn: '🚀 Créer mon premier paquet',
+    backendWakingUp: 'Réveil du serveur... cela peut prendre jusqu\'à 30 secondes au premier chargement.',
     home: 'Accueil', create: 'Créer', decks: 'Paquets', social: 'Social', profile: 'Profil', signOut: 'Déconnexion',
     hey: 'Salut', yourDecks: 'Vos Paquets', newDeck: 'Nouveau Paquet', noDecksYet: 'Pas encore de paquets.', createFirst: 'Créez le premier !',
     study: 'Étudier', cards: 'cartes', xpToLevel: 'XP pour niveau',
@@ -315,6 +319,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Ändere dein Thema 🎨', tourStep7Desc: 'Wähle jederzeit aus 5 animierten Themen. Jedes hat einen völlig anderen Hintergrund und Stimmung.',
     tourStep8Title: 'Du bist bereit!', tourStep8Desc: 'Das war\'s! Erstelle deinen ersten Stapel und beginne deine Serie. Viel Erfolg!',
     tourStepLabel: 'Schritt', tourOfLabel: 'von', tourBackBtn: '← Zurück', tourNextBtn: 'Weiter →', tourFinishBtn: '🚀 Meinen ersten Stapel erstellen',
+    backendWakingUp: 'Server wird geweckt... das kann beim ersten Laden bis zu 30 Sekunden dauern.',
     home: 'Startseite', create: 'Erstellen', decks: 'Stapel', social: 'Sozial', profile: 'Profil', signOut: 'Abmelden',
     hey: 'Hey', yourDecks: 'Deine Stapel', newDeck: 'Neuer Stapel', noDecksYet: 'Noch keine Stapel.', createFirst: 'Erstelle deinen ersten!',
     study: 'Lernen', cards: 'Karten', xpToLevel: 'XP bis Level',
@@ -380,6 +385,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'テーマを変更 🎨', tourStep7Desc: 'いつでも5つのアニメーションテーマから選べます。それぞれ全く異なる背景と雰囲気があります。',
     tourStep8Title: '準備完了です！', tourStep8Desc: '以上です！最初のデッキを作成して連続記録を積み上げましょう。頑張ってください！',
     tourStepLabel: 'ステップ', tourOfLabel: '/', tourBackBtn: '← 戻る', tourNextBtn: '次へ →', tourFinishBtn: '🚀 最初のデッキを作成',
+    backendWakingUp: 'サーバーを起動しています…初回読み込みには最大30秒かかることがあります。',
     home: 'ホーム', create: '作成', decks: 'デッキ', social: 'ソーシャル', profile: 'プロフィール', signOut: 'ログアウト',
     hey: 'こんにちは', yourDecks: 'あなたのデッキ', newDeck: '新しいデッキ', noDecksYet: 'まだデッキがありません。', createFirst: '最初のデッキを作りましょう！',
     study: '学習', cards: 'カード', xpToLevel: 'XP でレベルアップ',
@@ -445,6 +451,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: '更换主题 🎨', tourStep7Desc: '随时从5个动态主题中选择。每个主题都有完全不同的背景和氛围。',
     tourStep8Title: '一切就绪！', tourStep8Desc: '就这样！创建你的第一个卡组，开始积累连续记录吧。祝你好运！',
     tourStepLabel: '步骤', tourOfLabel: '/', tourBackBtn: '← 返回', tourNextBtn: '下一步 →', tourFinishBtn: '🚀 创建我的第一个卡组',
+    backendWakingUp: '正在唤醒服务器…首次加载可能需要长达30秒。',
     home: '首页', create: '创建', decks: '卡组', social: '社交', profile: '个人', signOut: '退出登录',
     hey: '嗨', yourDecks: '我的卡组', newDeck: '新建卡组', noDecksYet: '还没有卡组。', createFirst: '创建第一个吧！',
     study: '学习', cards: '张卡片', xpToLevel: 'XP 升级',
@@ -510,6 +517,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: '테마 변경 🎨', tourStep7Desc: '언제든지 5가지 애니메이션 테마 중에서 선택하세요. 각각 완전히 다른 배경과 분위기를 가지고 있습니다.',
     tourStep8Title: '준비 완료!', tourStep8Desc: '이제 다 됐습니다! 첫 덱을 만들고 연속 기록을 쌓아보세요. 행운을 빕니다!',
     tourStepLabel: '단계', tourOfLabel: '/', tourBackBtn: '← 뒤로', tourNextBtn: '다음 →', tourFinishBtn: '🚀 첫 덱 만들기',
+    backendWakingUp: '서버를 깨우는 중입니다... 첫 로딩 시 최대 30초가 걸릴 수 있습니다.',
     home: '홈', create: '만들기', decks: '덱', social: '소셜', profile: '프로필', signOut: '로그아웃',
     hey: '안녕하세요', yourDecks: '내 덱', newDeck: '새 덱', noDecksYet: '아직 덱이 없습니다.', createFirst: '첫 번째 덱을 만들어보세요!',
     study: '학습', cards: '카드', xpToLevel: 'XP 레벨업',
@@ -575,6 +583,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'غيّر مظهرك 🎨', tourStep7Desc: 'اختر من بين 5 مظاهر متحركة في أي وقت. كل واحد له خلفية وأجواء مختلفة تماماً.',
     tourStep8Title: 'أنت جاهز الآن!', tourStep8Desc: 'هذا كل شيء! أنشئ حزمتك الأولى وابدأ ببناء تلك السلسلة. حظاً موفقاً!',
     tourStepLabel: 'خطوة', tourOfLabel: 'من', tourBackBtn: '← رجوع', tourNextBtn: 'التالي ←', tourFinishBtn: '🚀 إنشاء حزمتي الأولى',
+    backendWakingUp: 'جارٍ تشغيل الخادم... قد يستغرق الأمر حتى 30 ثانية عند التحميل الأول.',
     home: 'الرئيسية', create: 'إنشاء', decks: 'الحزم', social: 'اجتماعي', profile: 'الملف', signOut: 'تسجيل الخروج',
     hey: 'مرحباً', yourDecks: 'حزمك', newDeck: 'حزمة جديدة', noDecksYet: 'لا توجد حزم بعد.', createFirst: 'أنشئ أولها!',
     study: 'دراسة', cards: 'بطاقات', xpToLevel: 'XP للمستوى',
@@ -640,6 +649,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Mude seu Tema 🎨', tourStep7Desc: 'Escolha entre 5 temas animados a qualquer momento. Cada um tem um fundo e clima completamente diferentes.',
     tourStep8Title: 'Você está pronto!', tourStep8Desc: 'É isso! Crie seu primeiro baralho e comece a construir essa sequência. Boa sorte!',
     tourStepLabel: 'Passo', tourOfLabel: 'de', tourBackBtn: '← Voltar', tourNextBtn: 'Próximo →', tourFinishBtn: '🚀 Criar meu primeiro baralho',
+    backendWakingUp: 'Ativando o servidor... isso pode levar até 30 segundos no primeiro carregamento.',
     home: 'Início', create: 'Criar', decks: 'Baralhos', social: 'Social', profile: 'Perfil', signOut: 'Sair',
     hey: 'Olá', yourDecks: 'Seus Baralhos', newDeck: 'Novo Baralho', noDecksYet: 'Nenhum baralho ainda.', createFirst: 'Crie o primeiro!',
     study: 'Estudar', cards: 'cartões', xpToLevel: 'XP para nível',
@@ -705,6 +715,7 @@ const T: Record<LangCode, TranslationKeys> = {
     tourStep7Title: 'Смените тему 🎨', tourStep7Desc: 'Выбирайте из 5 анимированных тем в любое время. У каждой совершенно свой фон и атмосфера.',
     tourStep8Title: 'Вы готовы!', tourStep8Desc: 'Вот и всё! Создайте свою первую колоду и начните наращивать серию. Удачи!',
     tourStepLabel: 'Шаг', tourOfLabel: 'из', tourBackBtn: '← Назад', tourNextBtn: 'Далее →', tourFinishBtn: '🚀 Создать первую колоду',
+    backendWakingUp: 'Сервер просыпается... это может занять до 30 секунд при первой загрузке.',
     home: 'Главная', create: 'Создать', decks: 'Колоды', social: 'Соцсеть', profile: 'Профиль', signOut: 'Выйти',
     hey: 'Привет', yourDecks: 'Ваши Колоды', newDeck: 'Новая Колода', noDecksYet: 'Колод пока нет.', createFirst: 'Создайте первую!',
     study: 'Учить', cards: 'карточек', xpToLevel: 'XP до уровня',
