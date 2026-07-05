@@ -31,16 +31,20 @@ const hasOnboarded = () => !!localStorage.getItem('memozy_onboarded');
 
 const AppRoutes: React.FC = () => {
   const { user, loading } = useAuth();
-  const { startTour }     = useTour();
+  const { startTour, isActive } = useTour();
   const [launched, setLaunched] = React.useState(hasLaunched);
 
-  // Auto-start tour on first sign-in
+  // Auto-start tour on first sign-in.
+  // Depends on user?.id (stable) rather than the whole `user` object, and
+  // checks `isActive` — Supabase can hand back a new `user` object on
+  // background token refreshes even for the same logged-in person, which
+  // was re-triggering this effect and resetting the tour mid-way.
   React.useEffect(() => {
-    if (user && !hasOnboarded()) {
+    if (user && !hasOnboarded() && !isActive) {
       const t = setTimeout(startTour, 900);
       return () => clearTimeout(t);
     }
-  }, [user]); // eslint-disable-line
+  }, [user?.id]); // eslint-disable-line
 
   if (loading) {
     return (
