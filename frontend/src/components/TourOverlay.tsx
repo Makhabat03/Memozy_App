@@ -6,7 +6,20 @@ import { useLanguage } from '../context/LanguageContext';
 import { useTour } from '../context/TourContext';
 
 const PADDING = 10;
-const TOOLTIP_W = 330;
+
+// Responsive tooltip width: fixed 330px on wider screens, but shrinks to
+// fit narrow phone screens with a small margin on each side.
+const useTooltipWidth = () => {
+  const [width, setWidth] = useState(
+    typeof window !== 'undefined' ? Math.min(330, window.innerWidth - 24) : 330
+  );
+  useEffect(() => {
+    const update = () => setWidth(Math.min(330, window.innerWidth - 24));
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return width;
+};
 
 const TourOverlay: React.FC = () => {
   const { isActive, step, total, steps, nextStep, prevStep, endTour } = useTour();
@@ -15,6 +28,8 @@ const TourOverlay: React.FC = () => {
   const navigate   = useNavigate();
   const location   = useLocation();
   const [rect, setRect] = useState<DOMRect | null>(null);
+  const TOOLTIP_W = useTooltipWidth();
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
 
   const current = steps[step] ?? steps[0];
 
@@ -82,12 +97,13 @@ const TourOverlay: React.FC = () => {
     const vh  = window.innerHeight;
     const r   = rect!;
     const clampX = (x: number) => Math.max(8, Math.min(vw - TOOLTIP_W - 8, x));
+    const clampLeftForRight = (x: number) => Math.max(8, Math.min(vw - TOOLTIP_W - 8, x));
 
     switch (current.placement) {
       case 'bottom': return { top:  r.bottom + PADDING + GAP, left: clampX(r.left + r.width / 2 - TOOLTIP_W / 2) };
       case 'top':    return { top:  Math.max(8, r.top - PADDING - GAP - 220), left: clampX(r.left + r.width / 2 - TOOLTIP_W / 2) };
-      case 'right':  return { top:  Math.max(8, Math.min(vh - 260, r.top + r.height / 2 - 110)), left: Math.min(vw - TOOLTIP_W - 8, r.right + PADDING + GAP) };
-      case 'left':   return { top:  Math.max(8, Math.min(vh - 260, r.top + r.height / 2 - 110)), right: vw - r.left + PADDING + GAP };
+      case 'right':  return { top:  Math.max(8, Math.min(vh - 260, r.top + r.height / 2 - 110)), left: clampLeftForRight(r.right + PADDING + GAP) };
+      case 'left':   return { top:  Math.max(8, Math.min(vh - 260, r.top + r.height / 2 - 110)), left: clampX(r.left - TOOLTIP_W - PADDING - GAP) };
       default:       return {};
     }
   };
@@ -136,10 +152,11 @@ const TourOverlay: React.FC = () => {
             zIndex: 9000,
             width: isCenter ? Math.min(440, window.innerWidth - 32) : TOOLTIP_W,
             background: theme.card,
-            borderRadius: '20px',
+            borderRadius: isMobile ? '16px' : '20px',
             boxShadow: `0 24px 64px rgba(0,0,0,0.55), 0 0 0 1.5px ${theme.primary}44`,
-            padding: '1.5rem 1.5rem 1.25rem',
+            padding: isMobile ? '1.1rem 1.1rem 1rem' : '1.5rem 1.5rem 1.25rem',
             fontFamily: theme.font,
+            maxWidth: 'calc(100vw - 16px)',
             ...(isCenter
               ? { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
               : { ...tooltipStyle() }),
@@ -174,7 +191,7 @@ const TourOverlay: React.FC = () => {
           {/* Title */}
           <div style={{
             fontWeight: 900,
-            fontSize: isCenter ? '1.35rem' : '0.97rem',
+            fontSize: isCenter ? (isMobile ? '1.15rem' : '1.35rem') : (isMobile ? '0.88rem' : '0.97rem'),
             color: theme.text,
             marginBottom: '0.45rem',
             paddingRight: '1.5rem',
@@ -185,9 +202,9 @@ const TourOverlay: React.FC = () => {
 
           {/* Description */}
           <div style={{
-            fontSize: '0.875rem',
+            fontSize: isMobile ? '0.8rem' : '0.875rem',
             color: theme.textLight,
-            lineHeight: 1.65,
+            lineHeight: 1.6,
             marginBottom: '1.1rem',
             textAlign: isCenter ? 'center' : 'left',
           }}>
