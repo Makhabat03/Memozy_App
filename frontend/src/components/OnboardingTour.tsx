@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { MSparkle, MFlame, MGlowStar, MCards, MThumbUp, MHardFace, MBolt } from './MemozyEmoji';
@@ -14,7 +14,7 @@ const TOTAL_STEPS = 5;
 const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [cardFlipped, setCardFlipped] = useState(false);
   const [rated, setRated] = useState<string | null>(null);
@@ -28,7 +28,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   const next = () => {
     if (step === TOTAL_STEPS - 1) {
       finish();
-      history.push('/create');
+      navigate('/some-route');
     } else {
       if (step === 3) setXpFill(0);
       setStep(s => s + 1);

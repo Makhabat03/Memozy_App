@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTour } from '../context/TourContext';
@@ -12,7 +12,7 @@ const TourOverlay: React.FC = () => {
   const { isActive, step, total, steps, nextStep, prevStep, endTour } = useTour();
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const history   = useHistory();
+  const navigate = useNavigate();
   const location   = useLocation();
   const [rect, setRect] = useState<DOMRect | null>(null);
 
@@ -40,7 +40,7 @@ const TourOverlay: React.FC = () => {
   useEffect(() => {
     if (!isActive || !current) return;
     if (location.pathname !== current.route) {
-      history.push(current.route);
+      navigate('/some-route');
       return; // re-triggers when pathname updates
     }
     findTarget();
@@ -64,7 +64,7 @@ const TourOverlay: React.FC = () => {
   const handleNext = () => {
     if (step === total - 1) {
       endTour();
-      history.push('/create');
+      navigate('/create');
     } else {
       nextStep();
     }
