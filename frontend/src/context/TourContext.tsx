@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { useLanguage } from './LanguageContext';
+import { TranslationKeys } from '../i18n/translations';
 
 export interface TourStep {
   target: string | null;
@@ -9,22 +11,25 @@ export interface TourStep {
   emoji?: string;
 }
 
-export const TOUR_STEPS: TourStep[] = [
-  { target: null,                   route: '/',       placement: 'center', emoji: '🌸', title: 'Welcome to Memozy!',       desc: "Here's a quick tour of the key things you need to know. Takes about 30 seconds." },
-  { target: 'streak-display',      route: '/',       placement: 'bottom',              title: 'Your Daily Streak 🔥',     desc: 'Study every day to keep this alive. Miss a day and it resets to zero — so make it a daily habit!' },
-  { target: 'new-deck-btn',        route: '/',       placement: 'bottom',              title: 'Create a Deck',            desc: 'Click here to make flashcards. Paste text, upload a PDF or image, and AI generates the cards for you instantly.' },
-  { target: 'create-tabs',         route: '/create', placement: 'bottom',              title: 'Three Ways to Create',     desc: 'Text, PDF, or Image — all three use AI to turn your content into question-and-answer flashcards automatically.' },
-  { target: null,                   route: '/',       placement: 'center', emoji: '🧠', title: 'How Studying Works',       desc: 'Tap a card to flip it, then rate yourself: Hard, Good, or Easy. Memozy uses this to schedule your next review — Hard cards come back sooner, Easy ones later.' },
-  { target: 'decks-actions',       route: '/decks',  placement: 'top',                 title: 'Sharing a Deck',           desc: 'The link icon copies a share link that works for anyone — even if your deck is set to Private. Use the toggle to control whether it shows up in the social feed.' },
-  { target: 'social-leaderboard',  route: '/social', placement: 'right',               title: 'Weekly Leaderboard 🏆',   desc: 'Follow friends to compete here. Resets every Monday — top XP earner wins bragging rights.' },
-  { target: 'theme-picker',        route: '/profile', placement: 'top',                title: 'Change Your Theme 🎨',    desc: 'Pick from 5 animated themes anytime. Each one has a completely different background and vibe.' },
-  { target: null,                   route: '/',       placement: 'center', emoji: '🚀', title: "You're ready!",            desc: "That's it! Create your first deck and start building that streak. Good luck!" },
+// Builds the tour step content from the current language's translations.
+// Target/route/placement/emoji are structural and stay constant across languages.
+const getTourSteps = (t: (key: keyof TranslationKeys) => string): TourStep[] => [
+  { target: null,                  route: '/',        placement: 'center', emoji: '🌸', title: t('tourStep0Title'), desc: t('tourStep0Desc') },
+  { target: 'streak-display',      route: '/',        placement: 'bottom',              title: t('tourStep1Title'), desc: t('tourStep1Desc') },
+  { target: 'new-deck-btn',        route: '/',        placement: 'bottom',              title: t('tourStep2Title'), desc: t('tourStep2Desc') },
+  { target: 'create-tabs',         route: '/create',  placement: 'bottom',              title: t('tourStep3Title'), desc: t('tourStep3Desc') },
+  { target: null,                  route: '/',        placement: 'center', emoji: '🧠', title: t('tourStep4Title'), desc: t('tourStep4Desc') },
+  { target: 'decks-actions',       route: '/decks',   placement: 'top',                 title: t('tourStep5Title'), desc: t('tourStep5Desc') },
+  { target: 'social-leaderboard',  route: '/social',  placement: 'right',               title: t('tourStep6Title'), desc: t('tourStep6Desc') },
+  { target: 'theme-picker',        route: '/profile', placement: 'top',                 title: t('tourStep7Title'), desc: t('tourStep7Desc') },
+  { target: null,                  route: '/',        placement: 'center', emoji: '🚀', title: t('tourStep8Title'), desc: t('tourStep8Desc') },
 ];
 
 interface TourCtx {
   isActive: boolean;
   step: number;
   total: number;
+  steps: TourStep[];
   startTour: () => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -32,26 +37,31 @@ interface TourCtx {
 }
 
 const TourContext = createContext<TourCtx>({
-  isActive: false, step: 0, total: TOUR_STEPS.length,
+  isActive: false, step: 0, total: 0, steps: [],
   startTour: () => {}, nextStep: () => {}, prevStep: () => {}, endTour: () => {},
 });
 
 export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { t } = useLanguage();
   const [isActive, setIsActive] = useState(false);
   const [step, setStep] = useState(0);
 
+  // Recomputes whenever the language changes, so switching language mid-tour
+  // immediately updates the visible step text.
+  const steps = useMemo(() => getTourSteps(t), [t]);
+
   const startTour = useCallback(() => { setStep(0); setIsActive(true); }, []);
-  // Clamp step whenever TOUR_STEPS length changes (e.g. hot-reload)
-  React.useEffect(() => { setStep(s => Math.min(s, TOUR_STEPS.length - 1)); }, []);
-  const endTour   = useCallback(() => {
+  // Clamp step whenever steps length changes (e.g. hot-reload or language switch)
+  React.useEffect(() => { setStep(s => Math.min(s, steps.length - 1)); }, [steps.length]);
+  const endTour = useCallback(() => {
     setIsActive(false);
     localStorage.setItem('memozy_onboarded', '1');
   }, []);
-  const nextStep  = useCallback(() => setStep(s => Math.min(s + 1, TOUR_STEPS.length - 1)), []);
-  const prevStep  = useCallback(() => setStep(s => Math.max(s - 1, 0)), []);
+  const nextStep = useCallback(() => setStep(s => Math.min(s + 1, steps.length - 1)), [steps.length]);
+  const prevStep = useCallback(() => setStep(s => Math.max(s - 1, 0)), []);
 
   return (
-    <TourContext.Provider value={{ isActive, step, total: TOUR_STEPS.length, startTour, nextStep, prevStep, endTour }}>
+    <TourContext.Provider value={{ isActive, step, total: steps.length, steps, startTour, nextStep, prevStep, endTour }}>
       {children}
     </TourContext.Provider>
   );

@@ -1,24 +1,26 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { useTour, TOUR_STEPS } from '../context/TourContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTour } from '../context/TourContext';
 
 const PADDING = 10;
 const TOOLTIP_W = 330;
 
 const TourOverlay: React.FC = () => {
-  const { isActive, step, total, nextStep, prevStep, endTour } = useTour();
+  const { isActive, step, total, steps, nextStep, prevStep, endTour } = useTour();
   const { theme } = useTheme();
-  const navigate   = useNavigate();
+  const { t } = useLanguage();
+  const history   = useHistory();
   const location   = useLocation();
   const [rect, setRect] = useState<DOMRect | null>(null);
 
-  const current = TOUR_STEPS[step] ?? TOUR_STEPS[0];
+  const current = steps[step] ?? steps[0];
 
   // Find the target element, with retry for pages still loading
   const findTarget = useCallback(() => {
-    if (!current.target) { setRect(null); return; }
+    if (!current?.target) { setRect(null); return; }
     let tries = 0;
     const poll = () => {
       const el = document.querySelector(`[data-tour="${current.target}"]`) as HTMLElement | null;
@@ -32,13 +34,13 @@ const TourOverlay: React.FC = () => {
       }
     };
     setTimeout(poll, 400);
-  }, [current.target]);
+  }, [current?.target]);
 
   // Navigate if needed, then find target
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || !current) return;
     if (location.pathname !== current.route) {
-      navigate(current.route);
+      history.push(current.route);
       return; // re-triggers when pathname updates
     }
     findTarget();
@@ -46,7 +48,7 @@ const TourOverlay: React.FC = () => {
 
   // Re-measure on resize/scroll
   useEffect(() => {
-    if (!isActive || !current.target) return;
+    if (!isActive || !current?.target) return;
     const update = () => {
       const el = document.querySelector(`[data-tour="${current.target}"]`) as HTMLElement | null;
       if (el) setRect(el.getBoundingClientRect());
@@ -57,18 +59,18 @@ const TourOverlay: React.FC = () => {
       window.removeEventListener('resize', update);
       window.removeEventListener('scroll', update, true);
     };
-  }, [isActive, step, current.target]);
+  }, [isActive, step, current?.target]);
 
   const handleNext = () => {
     if (step === total - 1) {
       endTour();
-      navigate('/create');
+      history.push('/create');
     } else {
       nextStep();
     }
   };
 
-  if (!isActive) return null;
+  if (!isActive || !current) return null;
 
   const hasSpotlight = rect !== null && current.target !== null;
 
@@ -194,7 +196,7 @@ const TourOverlay: React.FC = () => {
           {/* Progress bar */}
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: theme.textLight, marginBottom: '0.25rem', opacity: 0.7 }}>
-              <span>Step {step + 1} of {total}</span>
+              <span>{t('tourStepLabel')} {step + 1} {t('tourOfLabel')} {total}</span>
               <span>{Math.round(progress)}%</span>
             </div>
             <div style={{ background: `${theme.primary}22`, borderRadius: 999, height: 4, overflow: 'hidden' }}>
@@ -220,7 +222,7 @@ const TourOverlay: React.FC = () => {
                   fontFamily: theme.font, transition: 'all 0.15s',
                 }}
               >
-                ← Back
+                {t('tourBackBtn')}
               </button>
             )}
             <button
@@ -233,7 +235,7 @@ const TourOverlay: React.FC = () => {
                 fontFamily: theme.font,
               }}
             >
-              {step === total - 1 ? '🚀 Create my first deck' : 'Next →'}
+              {step === total - 1 ? t('tourFinishBtn') : t('tourNextBtn')}
             </button>
           </div>
         </motion.div>
