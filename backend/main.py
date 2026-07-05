@@ -10,7 +10,11 @@ app = FastAPI(title="FlashAI API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:19006", "*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:19006",
+        "https://tangerine-unicorn-9ae2f1.netlify.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
