@@ -12,7 +12,7 @@ const TourOverlay: React.FC = () => {
   const { isActive, step, total, steps, nextStep, prevStep, endTour } = useTour();
   const { theme } = useTheme();
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const navigate   = useNavigate();
   const location   = useLocation();
   const [rect, setRect] = useState<DOMRect | null>(null);
 
@@ -40,7 +40,7 @@ const TourOverlay: React.FC = () => {
   useEffect(() => {
     if (!isActive || !current) return;
     if (location.pathname !== current.route) {
-      navigate('/some-route');
+      navigate(current.route);
       return; // re-triggers when pathname updates
     }
     findTarget();
@@ -147,6 +147,7 @@ const TourOverlay: React.FC = () => {
         >
           {/* Close */}
           <button
+            type="button"
             onClick={endTour}
             style={{
               position: 'absolute', top: '0.8rem', right: '0.9rem',
@@ -212,6 +213,7 @@ const TourOverlay: React.FC = () => {
           <div style={{ display: 'flex', gap: '0.6rem' }}>
             {step > 0 && (
               <button
+                type="button"
                 onClick={prevStep}
                 style={{
                   flex: 1, padding: '0.6rem 0.5rem',
@@ -226,6 +228,7 @@ const TourOverlay: React.FC = () => {
               </button>
             )}
             <button
+              type="button"
               onClick={handleNext}
               style={{
                 flex: 2, padding: '0.65rem 0.5rem',
