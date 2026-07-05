@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import FirstLaunch from './pages/FirstLaunch';
 import Auth from './pages/Auth';
 import TourOverlay from './components/TourOverlay';
+import WakingUpBanner from './components/WakingUpBanner';
 import { TourProvider, useTour } from './context/TourContext';
 
 const Dashboard  = React.lazy(() => import('./pages/Dashboard'));
@@ -83,6 +84,8 @@ const App: React.FC = () => (
     <AuthProvider>
       <BrowserRouter>
         <TourProvider>
+        {/* Shows a small banner whenever a backend request is slow (e.g. cold start) */}
+        <WakingUpBanner />
         {/* Animated background behind everything */}
         <AnimatedBackground />
         <CursorEffect />
