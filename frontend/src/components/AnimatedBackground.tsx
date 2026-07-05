@@ -339,12 +339,13 @@ const AnimatedBackground: React.FC = () => {
     // ── MINIMAL ── very subtle floating orbs ──
     const initSubtle = () => {
       const color = '#6366f1';
-      particles = Array.from({ length: 20 }, () => ({
+      particles = Array.from({ length: 40 }, () => ({ // more particles
         x: Math.random() * W, y: Math.random() * H,
         vx: (Math.random() - 0.5) * 0.25,
         vy: (Math.random() - 0.5) * 0.25,
-        size: 3 + Math.random() * 6,
-        opacity: 0.06 + Math.random() * 0.08, color,
+        size: 6 + Math.random() * 10,        // bigger
+        opacity: 0.15 + Math.random() * 0.15, // more visible
+        color,
       }));
     };
 

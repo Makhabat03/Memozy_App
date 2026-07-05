@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { MSparkle, MFlame, MGlowStar, MCards, MThumbUp, MHardFace, MBolt } from './MemozyEmoji';
 
 interface OnboardingTourProps {
@@ -12,7 +13,8 @@ const TOTAL_STEPS = 5;
 
 const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   const { theme } = useTheme();
-  const navigate = useNavigate();
+  const { t } = useLanguage();
+  const history = useHistory();
   const [step, setStep] = useState(0);
   const [cardFlipped, setCardFlipped] = useState(false);
   const [rated, setRated] = useState<string | null>(null);
@@ -26,7 +28,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   const next = () => {
     if (step === TOTAL_STEPS - 1) {
       finish();
-      navigate('/create');
+      history.push('/create');
     } else {
       if (step === 3) setXpFill(0);
       setStep(s => s + 1);
@@ -78,7 +80,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
               background: 'none', border: 'none', cursor: 'pointer',
               color: theme.textLight, fontSize: '0.8rem', opacity: 0.6,
             }}>
-              Skip tour
+              {t('tourSkip')}
             </button>
           )}
 
@@ -105,10 +107,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 <MSparkle size={72} />
               </motion.div>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: theme.text, margin: '0 0 0.6rem' }}>
-                Hey, welcome to Memozy!
+                {t('tourWelcomeTitle')}
               </h2>
               <p style={{ color: theme.textLight, lineHeight: 1.6, margin: '0 0 1.5rem' }}>
-                Let me show you around in <strong style={{ color: theme.primary }}>4 quick steps</strong> so you can start learning right away.
+                {t('tourWelcomeBody')}
               </p>
             </>
           )}
@@ -120,10 +122,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 <MCards size={64} />
               </motion.div>
               <h2 style={{ fontSize: '1.55rem', fontWeight: 900, color: theme.text, margin: '0 0 0.5rem' }}>
-                Create decks instantly
+                {t('tourCreateTitle')}
               </h2>
               <p style={{ color: theme.textLight, lineHeight: 1.6, margin: '0 0 1.4rem' }}>
-                Paste any text, upload a PDF, or type cards manually. <strong style={{ color: theme.primary }}>AI generates flashcards</strong> for you in seconds.
+                {t('tourCreateBody')}
               </p>
               {/* Mock create card */}
               <motion.div
@@ -137,7 +139,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 }}
               >
                 <div style={{ fontSize: '0.75rem', color: theme.textLight, marginBottom: '0.4rem', fontWeight: 600 }}>
-                  PASTE YOUR NOTES
+                  {t('textPlaceholder').split(',')[0].toUpperCase() /* keep visual style; fallback label */}
                 </div>
                 <motion.div
                   style={{ fontSize: '0.85rem', color: theme.text, lineHeight: 1.5 }}
@@ -167,7 +169,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                   transition={{ delay: 2.2 }}
                   style={{ fontSize: '0.72rem', color: theme.primary, fontWeight: 700, marginTop: '0.4rem' }}
                 >
-                  ✓ 12 cards generated!
+                  ✓ 12 {t('cards')}!
                 </motion.div>
               </motion.div>
             </>
@@ -177,13 +179,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
           {step === 2 && (
             <>
               <h2 style={{ fontSize: '1.55rem', fontWeight: 900, color: theme.text, margin: '0 0 0.4rem' }}>
-                Study smarter
+                {t('tourStudyTitle')}
               </h2>
               <p style={{ color: theme.textLight, fontSize: '0.88rem', margin: '0 0 1.2rem' }}>
-                {!cardFlipped
-                  ? <>👇 <strong style={{ color: theme.primary }}>Tap the card</strong> to reveal the answer</>
-                  : <>Now rate how well you knew it:</>
-                }
+                {!cardFlipped ? t('tourStudyHint') : t('tourRateHint')}
               </p>
 
               {/* Flip card */}
@@ -203,15 +202,15 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                     border: `2px solid ${theme.primary}55`, borderRadius: '16px',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.3rem',
                   }}>
-                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: theme.textLight, letterSpacing: '0.08em' }}>QUESTION</div>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: theme.text }}>What is spaced repetition?</div>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: theme.textLight, letterSpacing: '0.08em' }}>{t('frontLabel')}</div>
+                    <div style={{ fontWeight: 800, fontSize: '0.95rem', color: theme.text }}>{t('tourQuestion')}</div>
                     {!cardFlipped && (
                       <motion.div
                         animate={{ y: [0, 4, 0] }}
                         transition={{ duration: 1.2, repeat: Infinity }}
                         style={{ fontSize: '0.7rem', color: theme.primary, marginTop: '0.2rem' }}
                       >
-                        tap to flip ↕
+                        {t('flipHint')} ↕
                       </motion.div>
                     )}
                   </div>
@@ -224,9 +223,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.3rem',
                     padding: '0.75rem',
                   }}>
-                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: theme.textLight, letterSpacing: '0.08em' }}>ANSWER</div>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: theme.textLight, letterSpacing: '0.08em' }}>{t('backLabel')}</div>
                     <div style={{ fontWeight: 600, fontSize: '0.82rem', color: theme.text, lineHeight: 1.5 }}>
-                      A learning technique where reviews are spaced over increasing intervals for long-term memory.
+                      {t('tourAnswer')}
                     </div>
                   </div>
                 </motion.div>
@@ -242,9 +241,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                     style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', marginBottom: '1.2rem' }}
                   >
                     {[
-                      { label: 'Hard', color: '#ef4444', icon: <MHardFace size={20} /> },
-                      { label: 'Good', color: theme.primary, icon: <MThumbUp size={20} /> },
-                      { label: 'Easy', color: '#22c55e', icon: <MSparkle size={20} /> },
+                      { label: t('hard'), color: '#ef4444', icon: <MHardFace size={20} /> },
+                      { label: t('good'), color: theme.primary, icon: <MThumbUp size={20} /> },
+                      { label: t('easy'), color: '#22c55e', icon: <MSparkle size={20} /> },
                     ].map(({ label, color, icon }) => (
                       <motion.button
                         key={label}
@@ -273,7 +272,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                   animate={{ opacity: 1 }}
                   style={{ fontSize: '0.8rem', color: theme.primary, fontWeight: 700, margin: '0 0 1rem' }}
                 >
-                  Memozy will schedule your next review automatically!
+                  {t('tourScheduleMsg')}
                 </motion.p>
               )}
             </>
@@ -290,16 +289,16 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 <MFlame size={60} />
               </motion.div>
               <h2 style={{ fontSize: '1.55rem', fontWeight: 900, color: theme.text, margin: '0 0 0.5rem' }}>
-                Streaks &amp; XP
+                {t('tourStreakTitle')}
               </h2>
               <p style={{ color: theme.textLight, lineHeight: 1.6, margin: '0 0 1.2rem' }}>
-                Study every day to grow your streak. Earn <strong style={{ color: theme.primary }}>XP</strong>, level up, and unlock badges.
+                {t('tourStreakBody')}
               </p>
 
               {/* Animated XP bar demo */}
               <div style={{ marginBottom: '0.5rem', textAlign: 'left' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: theme.textLight, marginBottom: '0.3rem' }}>
-                  <span>Level 3</span><span>240 / 500 XP</span>
+                  <span>{t('levelLabel')} 3</span><span>240 / 500 XP</span>
                 </div>
                 <div style={{ background: `${theme.primary}22`, borderRadius: 999, height: 10, overflow: 'hidden' }}>
                   <motion.div
@@ -319,9 +318,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem', marginBottom: '1rem' }}
               >
                 {[
-                  { icon: <MFlame size={26} />, label: '7 Day' },
-                  { icon: <MGlowStar size={26} />, label: 'Flawless' },
-                  { icon: <MBolt size={26} />, label: 'Speed' },
+                  { icon: <MFlame size={26} />, label: t('streak1Week') },
+                  { icon: <MGlowStar size={26} />, label: t('legendaryLabel') },
+                  { icon: <MBolt size={26} />, label: t('badgeLevel5') },
                 ].map(({ icon, label }, i) => (
                   <motion.div
                     key={label}
@@ -353,10 +352,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
                 <MSparkle size={76} />
               </motion.div>
               <h2 style={{ fontSize: '1.9rem', fontWeight: 900, color: theme.text, margin: '0 0 0.6rem' }}>
-                You're all set!
+                {t('tourReadyTitle')}
               </h2>
               <p style={{ color: theme.textLight, lineHeight: 1.6, margin: '0 0 1.5rem' }}>
-                Time to create your first deck and start building that streak. You've got this! 🔥
+                {t('tourReadyBody')}
               </p>
               {/* Floating sparkles */}
               {[...Array(5)].map((_, i) => (
@@ -395,11 +394,11 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
               transition: 'opacity 0.2s',
             }}
           >
-            {step === 0 && "Let's go →"}
-            {step === 1 && 'Next →'}
-            {step === 2 && (rated ? 'Next →' : 'Rate the card to continue')}
-            {step === 3 && 'Next →'}
-            {step === 4 && '🚀 Create my first deck'}
+            {step === 0 && t('tourLetsGo')}
+            {step === 1 && t('tourNext')}
+            {step === 2 && (rated ? t('tourNext') : t('tourRateToContinue'))}
+            {step === 3 && t('tourNext')}
+            {step === 4 && t('tourCreateFirstDeck')}
           </motion.button>
         </motion.div>
       </AnimatePresence>
